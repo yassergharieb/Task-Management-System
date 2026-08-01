@@ -59,3 +59,39 @@ test('task query builder filters by status priority and title search', function 
         ->toHaveCount(1)
         ->first()->id->toBe($matchedTask->id);
 });
+
+test('task query builder finds overdue incomplete tasks pending notification', function () {
+    $project = Project::factory()->create();
+
+    $matchedTask = Task::factory()->for($project)->create([
+        'status' => TaskStatus::Todo,
+        'due_date' => now()->subDay()->toDateString(),
+        'overdue_notified_at' => null,
+    ]);
+
+    Task::factory()->for($project)->create([
+        'status' => TaskStatus::Done,
+        'due_date' => now()->subDay()->toDateString(),
+        'overdue_notified_at' => null,
+    ]);
+
+    Task::factory()->for($project)->create([
+        'status' => TaskStatus::InProgress,
+        'due_date' => now()->addDay()->toDateString(),
+        'overdue_notified_at' => null,
+    ]);
+
+    Task::factory()->for($project)->create([
+        'status' => TaskStatus::Todo,
+        'due_date' => now()->subDay()->toDateString(),
+        'overdue_notified_at' => now()->subHour(),
+    ]);
+
+    $tasks = TaskQueryBuilder::overduePendingNotifications()
+        ->toBase()
+        ->get();
+
+    expect($tasks)
+        ->toHaveCount(1)
+        ->first()->id->toBe($matchedTask->id);
+});

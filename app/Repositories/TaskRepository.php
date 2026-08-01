@@ -6,6 +6,7 @@ use App\Contracts\Repositories\TaskRepositoryInterface;
 use App\Models\Project;
 use App\Models\Task;
 use App\QueryBuilders\TaskQueryBuilder;
+use Closure;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class TaskRepository implements TaskRepositoryInterface
@@ -47,6 +48,22 @@ class TaskRepository implements TaskRepositoryInterface
             ->pluck('id')
             ->map(fn (int|string $id): int => (int) $id)
             ->all();
+    }
+
+    public function chunkOverduePendingNotifications(int $count, Closure $callback): bool
+    {
+        return TaskQueryBuilder::overduePendingNotifications()
+            ->toBase()
+            ->chunkById($count, $callback);
+    }
+
+    public function markOverdueNotified(Task $task): Task
+    {
+        $task->forceFill([
+            'overdue_notified_at' => now(),
+        ])->save();
+
+        return $task->refresh();
     }
 
     /**

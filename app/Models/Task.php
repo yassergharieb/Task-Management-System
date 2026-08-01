@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 
-#[Fillable(['project_id', 'title', 'description', 'priority', 'status', 'due_date'])]
+#[Fillable(['project_id', 'title', 'description', 'priority', 'status', 'due_date', 'overdue_notified_at'])]
 class Task extends Model
 {
     /** @use HasFactory<TaskFactory> */
@@ -42,6 +42,7 @@ class Task extends Model
             'priority' => TaskPriority::class,
             'status' => TaskStatus::class,
             'due_date' => 'date:Y-m-d',
+            'overdue_notified_at' => 'datetime',
         ];
     }
 }

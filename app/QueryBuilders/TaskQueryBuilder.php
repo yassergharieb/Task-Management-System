@@ -2,6 +2,7 @@
 
 namespace App\QueryBuilders;
 
+use App\Enums\TaskStatus;
 use App\Models\Project;
 use App\Models\Task;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -26,6 +27,18 @@ class TaskQueryBuilder
             Task::query()
                 ->with('attachments')
                 ->where('project_id', $project->id),
+        );
+    }
+
+    public static function overduePendingNotifications(): self
+    {
+        return new self(
+            Task::query()
+                ->with('project.user')
+                ->whereNotNull('due_date')
+                ->whereDate('due_date', '<', now()->toDateString())
+                ->where('status', '!=', TaskStatus::Done->value)
+                ->whereNull('overdue_notified_at'),
         );
     }
 
