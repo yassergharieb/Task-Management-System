@@ -4,6 +4,7 @@ namespace App\Contracts\Repositories;
 
 use App\Models\Project;
 use App\Models\Task;
+use Closure;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 interface TaskRepositoryInterface
@@ -23,6 +24,10 @@ interface TaskRepositoryInterface
      * @return array<int, int>
      */
     public function getIdsForProject(Project $project): array;
+
+    public function chunkOverduePendingNotifications(int $count, Closure $callback): bool;
+
+    public function markOverdueNotified(Task $task): Task;
 
     /**
      * @param  array{title?: string, description?: string|null, priority?: string, status?: string, due_date?: string|null}  $data

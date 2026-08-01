@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "6c8dd556-8e42-4b4b-8f84-49f7aa61328e",
     "name": "Task Management System API",
-    "description": "Postman collection for the Laravel Sanctum v1 authentication and project endpoints.",
+    "description": "Postman collection for the Laravel Sanctum v1 authentication, dashboard, project, and task endpoints.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -177,6 +177,68 @@
                 "api",
                 "v1",
                 "logout"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "item": [
+        {
+          "name": "Get Dashboard Statistics",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 200', function () {",
+                  "    pm.response.to.have.status(200);",
+                  "});",
+                  "",
+                  "pm.test('Response has dashboard counters', function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.data.total_projects).to.be.a('number');",
+                  "    pm.expect(json.data.active_projects).to.be.a('number');",
+                  "    pm.expect(json.data.total_tasks).to.be.a('number');",
+                  "    pm.expect(json.data.completed_tasks).to.be.a('number');",
+                  "    pm.expect(json.data.pending_tasks).to.be.a('number');",
+                  "    pm.expect(json.data.overdue_tasks).to.be.a('number');",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/dashboard",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "dashboard"
               ]
             }
           },
