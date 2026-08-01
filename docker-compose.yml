@@ -40,6 +40,18 @@ services:
             timeout: 5s
             retries: 10
 
+    phpmyadmin:
+        image: phpmyadmin:5.2-apache
+        ports:
+            - "${FORWARD_PHPMYADMIN_PORT:-8081}:80"
+        environment:
+            PMA_HOST: mysql
+            PMA_PORT: 3306
+            MYSQL_ROOT_PASSWORD: ${DB_ROOT_PASSWORD:-root}
+        depends_on:
+            mysql:
+                condition: service_healthy
+
     redis:
         image: redis:8-alpine
         ports:

@@ -2,7 +2,7 @@
   "info": {
     "_postman_id": "6c8dd556-8e42-4b4b-8f84-49f7aa61328e",
     "name": "Task Management System API",
-    "description": "Postman collection for the Laravel Sanctum v1 authentication endpoints.",
+    "description": "Postman collection for the Laravel Sanctum v1 authentication and project endpoints.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -183,6 +183,239 @@
           "response": []
         }
       ]
+    },
+    {
+      "name": "Projects",
+      "item": [
+        {
+          "name": "Create Project",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status code is 201', function () {",
+                  "    pm.response.to.have.status(201);",
+                  "});",
+                  "",
+                  "pm.test('Response has project id', function () {",
+                  "    const json = pm.response.json();",
+                  "    pm.expect(json.data.id).to.exist;",
+                  "    pm.collectionVariables.set('project_id', json.data.id);",
+                  "});"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Project Alpha\",\n  \"description\": \"First project in the workspace.\",\n  \"status\": \"active\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/projects",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "projects"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "List Projects",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/projects?status=active&search=project",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "projects"
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "active"
+                },
+                {
+                  "key": "search",
+                  "value": "project"
+                }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "View Project",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/projects/{{project_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "projects",
+                "{{project_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Project",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Project Alpha Updated\",\n  \"description\": \"Updated project details.\",\n  \"status\": \"completed\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/projects/{{project_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "projects",
+                "{{project_id}}"
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Project",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/projects/{{project_id}}",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "projects",
+                "{{project_id}}"
+              ]
+            }
+          },
+          "response": []
+        }
+      ]
     }
   ],
   "variable": [
@@ -208,6 +441,11 @@
     },
     {
       "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "project_id",
       "value": "",
       "type": "string"
     }

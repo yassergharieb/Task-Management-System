@@ -5,13 +5,16 @@ use Tests\TestCase;
 putenv('DB_CONNECTION=sqlite');
 putenv('DB_DATABASE=:memory:');
 putenv('DB_URL=');
+putenv('QUEUE_CONNECTION=sync');
 
 $_ENV['DB_CONNECTION'] = 'sqlite';
 $_ENV['DB_DATABASE'] = ':memory:';
 $_ENV['DB_URL'] = '';
+$_ENV['QUEUE_CONNECTION'] = 'sync';
 $_SERVER['DB_CONNECTION'] = 'sqlite';
 $_SERVER['DB_DATABASE'] = ':memory:';
 $_SERVER['DB_URL'] = '';
+$_SERVER['QUEUE_CONNECTION'] = 'sync';
 
 /*
 |--------------------------------------------------------------------------
@@ -25,7 +28,7 @@ $_SERVER['DB_URL'] = '';
 */
 
 pest()->extend(TestCase::class)
-    ->in('Feature');
+    ->in('Feature', 'Unit');
 
 /*
 |--------------------------------------------------------------------------
