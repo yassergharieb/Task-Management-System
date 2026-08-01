@@ -17,6 +17,8 @@ return [
 
     'default' => env('CACHE_STORE', 'database'),
 
+    'dashboard_ttl' => env('DASHBOARD_CACHE_TTL', 600),
+
     /*
     |--------------------------------------------------------------------------
     | Cache Stores
