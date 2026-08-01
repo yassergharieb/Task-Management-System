@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Contracts\Repositories\AttachmentRepositoryInterface;
 use App\Contracts\Repositories\ProjectRepositoryInterface;
 use App\Contracts\Services\ProjectServiceInterface;
 use App\Jobs\DeleteProjectAttachmentsJob;
@@ -16,6 +17,7 @@ class ProjectService implements ProjectServiceInterface
 {
     public function __construct(
         private readonly ProjectRepositoryInterface $projects,
+        private readonly AttachmentRepositoryInterface $attachments,
     ) {}
 
     /**
@@ -64,13 +66,8 @@ class ProjectService implements ProjectServiceInterface
     public function delete(Authenticatable $user, Project $project): void
     {
         $project = $this->ensureOwnedProject($user, $project);
-
         DB::transaction(function () use ($project): void {
-            /** @var array<int, int> $attachmentIds */
-            $attachmentIds = $project->attachments
-                ->pluck('id')
-                ->all();
-
+            $attachmentIds = $this->attachments->getIdsForProjectWithTasks($project);
             $this->projects->delete($project);
 
             DeleteProjectAttachmentsJob::dispatch($attachmentIds)->afterCommit();
