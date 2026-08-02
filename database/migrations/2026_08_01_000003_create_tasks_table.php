@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('status')->default(TaskStatus::Todo->value);
             $table->date('due_date')->nullable();
             $table->timestamps();
+            $table->softDeletes();
 
             $table->index(['project_id', 'status']);
             $table->index(['project_id', 'priority']);

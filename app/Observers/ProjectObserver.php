@@ -19,6 +19,11 @@ class ProjectObserver
         $this->clearProjectCache($project);
     }
 
+    public function deleting(Project $project): void
+    {
+        $project->tasks()->get()->each->delete();
+    }
+
     public function deleted(Project $project): void
     {
         $this->clearProjectCache($project);
