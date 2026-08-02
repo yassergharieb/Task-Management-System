@@ -151,7 +151,7 @@ test('authenticated user can view update and delete an owned task', function () 
             'message' => 'Task deleted successfully',
         ]);
 
-    $this->assertDatabaseMissing('tasks', [
+    $this->assertSoftDeleted('tasks', [
         'id' => $task->id,
     ]);
 });
@@ -205,7 +205,7 @@ test('deleting a task dispatches attachment cleanup after commit', function () {
     Queue::assertPushed(DeleteProjectAttachmentsJob::class);
     Storage::disk('public')->assertExists($path);
 
-    $this->assertDatabaseMissing('tasks', [
+    $this->assertSoftDeleted('tasks', [
         'id' => $task->id,
     ]);
 });

@@ -31,7 +31,7 @@ test('project service deletes project then dispatches attachment cleanup job', f
 
     app(ProjectServiceInterface::class)->delete($user, $project);
 
-    $this->assertDatabaseMissing('projects', [
+    $this->assertSoftDeleted('projects', [
         'id' => $project->id,
     ]);
 

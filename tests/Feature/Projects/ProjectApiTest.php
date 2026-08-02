@@ -3,6 +3,7 @@
 use App\Enums\ProjectStatus;
 use App\Jobs\DeleteProjectAttachmentsJob;
 use App\Models\Project;
+use App\Models\Task;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
@@ -96,6 +97,7 @@ test('authenticated user can view update and delete an owned project', function 
     $project = Project::factory()->for($user)->active()->create([
         'name' => 'Original Project',
     ]);
+    $task = Task::factory()->for($project)->create();
 
     $this
         ->actingAs($user)
@@ -122,8 +124,11 @@ test('authenticated user can view update and delete an owned project', function 
             'message' => 'Project deleted successfully',
         ]);
 
-    $this->assertDatabaseMissing('projects', [
+    $this->assertSoftDeleted('projects', [
         'id' => $project->id,
+    ]);
+    $this->assertSoftDeleted('tasks', [
+        'id' => $task->id,
     ]);
 });
 
@@ -210,7 +215,7 @@ test('deleting a project dispatches attachment cleanup after commit', function (
     Queue::assertPushed(DeleteProjectAttachmentsJob::class);
     Storage::disk('public')->assertExists($path);
 
-    $this->assertDatabaseMissing('projects', [
+    $this->assertSoftDeleted('projects', [
         'id' => $project->id,
     ]);
 
